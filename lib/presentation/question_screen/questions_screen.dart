@@ -1,53 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:task_f8/config/question_category.dart';
-import 'package:task_f8/model/question.dart';
-import 'package:task_f8/presentation/add_question_dialog/add_question_dialog.dart';
-import 'package:task_f8/presentation/question_details_screen/question_details_screen.dart';
-import 'package:task_f8/presentation/question_screen/widgets/Floating_actions_panel.dart';
-import 'package:task_f8/presentation/question_screen/widgets/questions_list.dart';
+import 'package:task_f9/model/question.dart';
+import 'package:task_f9/presentation/question_details_screen/question_details_screen.dart';
+import 'package:task_f9/presentation/question_screen/widgets/floating_actions_panel.dart';
+import 'package:task_f9/presentation/question_screen/widgets/questions_list.dart';
+import 'package:task_f9/utils/navigation.dart';
 
-class QuestionsScreen extends StatefulWidget {
-  const QuestionsScreen({super.key});
+class QuestionsArguments {
+  QuestionsArguments(this.questions);
 
-  @override
-  State<QuestionsScreen> createState() => _QuestionsScreenState();
+  final List<Question> questions;
 }
 
-class _QuestionsScreenState extends State<QuestionsScreen> {
-  List<Question> questions = [];
+class QuestionsScreen extends StatelessWidget {
+  static const String routeName = '/questions';
 
-  void _addQuestion(Question question) {
-    setState(() {
-      questions.add(question);
-    });
-  }
+  const QuestionsScreen({super.key, required this.arguments});
 
-  void _showAddQuestionDialog() {
-    showDialog(
-        context: context,
-        builder: (context) =>
-            AddQuestionDialog(questionCategories: QuestionCategory.values, onAdd: _addQuestion));
-  }
+  final QuestionsArguments arguments;
 
-  void _showQuestionDetails(Question question) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => QuestionDetailsScreen(question),
-        ));
+  void _showQuestionDetails({required BuildContext context, required Question question}) {
+    pushNamedRoute(
+      context,
+      QuestionDetailsScreen.routeName,
+      arguments: QuestionDetailsArguments(question),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final List<Question> questions = arguments.questions;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Questions Screen'),
         ),
-        body: QuestionsList(questions: questions, onSelectQuestion: _showQuestionDetails),
+        body: QuestionsList(
+            questions: questions,
+            onSelectQuestion: (question) => _showQuestionDetails(
+                  context: context,
+                  question: question,
+                )),
         floatingActionButton: FloatingActionsPanel(
           questionsCount: questions.length,
-          onAddQuestion: _showAddQuestionDialog,
-          onShowQuestion: (index) => _showQuestionDetails(questions[index]),
+          onShowQuestion: (index) => _showQuestionDetails(
+            context: context,
+            question: questions[index],
+          ),
         ));
   }
 }

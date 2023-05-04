@@ -1,25 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:task_f8/model/question.dart';
-import 'package:task_f8/presentation/components/expanded_text_field.dart';
-import 'package:task_f8/presentation/components/question_category_icon.dart';
-import 'package:task_f8/presentation/question_details_screen/widgets/hint_snack_bar.dart';
-import 'package:task_f8/presentation/question_details_screen/widgets/solution_alert_dialog.dart';
+import 'package:task_f9/model/question.dart';
+import 'package:task_f9/presentation/components/expanded_text_field.dart';
+import 'package:task_f9/presentation/components/question_category_icon.dart';
+import 'package:task_f9/presentation/question_details_screen/widgets/hint_snack_bar.dart';
+import 'package:task_f9/presentation/question_details_screen/widgets/solution_alert_dialog.dart';
+import 'package:task_f9/utils/navigation.dart';
 
-class QuestionDetailsScreen extends StatefulWidget {
-  const QuestionDetailsScreen(this.question, {super.key});
+class QuestionDetailsArguments {
+  const QuestionDetailsArguments(this.question);
 
   final Question question;
+}
+
+class QuestionDetailsScreen extends StatefulWidget {
+  static const String routeName = '/questionDetails';
+
+  const QuestionDetailsScreen({super.key, required this.arguments});
+
+  final QuestionDetailsArguments arguments;
 
   @override
   State<QuestionDetailsScreen> createState() => _QuestionDetailsScreenState();
 }
 
 class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
+  _QuestionDetailsScreenState();
+
+  late final Iterator<String> hintsIterator;
+
+  Question get question => widget.arguments.question;
+
   String answer = '';
-  late Iterator<String> hintsIterator = widget.question.hints;
   bool isComplete = false;
 
   bool get isShowAnswerButton => answer.isNotEmpty && !isComplete;
+
+  @override
+  void initState() {
+    super.initState();
+
+    hintsIterator = question.hints;
+  }
 
   void showHint(String hint, {void Function()? onClosed}) {
     ScaffoldMessenger.of(context)
@@ -34,17 +55,17 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
       builder: (context) {
         return SolutionAlertDialog.build(
           context: context,
-          solution: widget.question.solution,
+          solution: question.solution,
         );
       },
-    ).then((value) => Navigator.of(context).pop());
+    ).then((value) => popRoute(context));
   }
 
   void checkAnswer() {
-    if (answer == widget.question.solution) {
+    if (answer == question.solution) {
       setState(() => isComplete = true);
 
-      showHint('Correct!', onClosed: () => Navigator.of(context).pop());
+      showHint('Correct!', onClosed: () => popRoute(context));
       return;
     }
 
@@ -67,11 +88,11 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              QuestionCategoryIcon(category: widget.question.category, width: 70, height: 79),
+              QuestionCategoryIcon(category: question.category, width: 70, height: 79),
               const SizedBox(height: 20),
               Container(
                 alignment: AlignmentDirectional.topStart,
-                child: Text(widget.question.text),
+                child: Text(question.text),
               ),
               const SizedBox(height: 20),
               Container(

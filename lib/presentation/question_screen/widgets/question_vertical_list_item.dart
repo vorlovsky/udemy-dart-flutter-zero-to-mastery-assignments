@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_f8/model/question.dart';
-import 'package:task_f8/presentation/components/question_category_icon.dart';
+import 'package:task_f9/model/question.dart';
+import 'package:task_f9/presentation/components/question_category_icon.dart';
 
 class QuestionVerticalListItem extends StatelessWidget {
   const QuestionVerticalListItem({super.key, required this.question});
@@ -15,7 +15,11 @@ class QuestionVerticalListItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          QuestionCategoryIcon(category: question.category, width: 70, height: 70),
+          QuestionCategoryIcon(
+            category: question.category,
+            width: 70,
+            height: 70,
+          ),
           const SizedBox(
             width: 10,
           ),

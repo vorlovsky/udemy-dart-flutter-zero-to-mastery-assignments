@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.task_f8">
+    package="com.example.task_f9">
    <application
-        android:label="task_f8"
+        android:label="task_f9"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
