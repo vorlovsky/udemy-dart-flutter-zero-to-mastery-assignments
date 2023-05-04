@@ -10,13 +10,22 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Task F2',
+      title: 'Flutter Task F3',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: const QuestionsPage(),
     );
   }
+}
+
+enum QuestionCategory {
+  art,
+  finance,
+  leasure,
+  science,
+  sport,
+  travel,
 }
 
 class QuestionsPage extends StatefulWidget {
@@ -27,8 +36,6 @@ class QuestionsPage extends StatefulWidget {
 }
 
 class _QuestionsPageState extends State<QuestionsPage> {
-  static const List<String> questionCategories = ['Category 1', 'Category 2', 'Category 3'];
-
   List<Question> questions = [];
 
   static QuestionWidget questionMapper(Question question) => QuestionWidget(question: question);
@@ -43,7 +50,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
     showDialog(
         context: context,
         builder: (context) =>
-            AddQuestionDialog(questionCategories: questionCategories, onAdd: _addQuestion));
+            AddQuestionDialog(questionCategories: QuestionCategory.values, onAdd: _addQuestion));
   }
 
   @override
@@ -73,17 +80,25 @@ class _QuestionsPageState extends State<QuestionsPage> {
 }
 
 class AddQuestionDialog extends StatefulWidget {
-  static DropdownMenuItem<String> questionCategoryMapper(String value) {
-    return DropdownMenuItem<String>(
-      value: value,
-      child: Text(value),
+  static DropdownMenuItem<QuestionCategory> questionCategoryMapper(QuestionCategory category) {
+    return DropdownMenuItem<QuestionCategory>(
+      value: category,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          QuestionCategoryIcon(category: category, width: 20, height: 20),
+          const SizedBox(width: 10),
+          Text(category.name),
+        ],
+      ),
     );
   }
 
-  final List<DropdownMenuItem<String>> categoryItems;
+  final List<DropdownMenuItem<QuestionCategory>> categoryItems;
   final void Function(Question) onAdd;
 
-  AddQuestionDialog({super.key, required List<String> questionCategories, required this.onAdd})
+  AddQuestionDialog(
+      {super.key, required List<QuestionCategory> questionCategories, required this.onAdd})
       : categoryItems = questionCategories.map(questionCategoryMapper).toList();
 
   @override
@@ -91,7 +106,7 @@ class AddQuestionDialog extends StatefulWidget {
 }
 
 class _AddQuestionDialogState extends State<AddQuestionDialog> {
-  String? questionCategory;
+  QuestionCategory? questionCategory;
   String? questionText;
 
   bool get _isAllDataProvided =>
@@ -118,7 +133,7 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
                   isExpanded: true,
                   icon: const Icon(Icons.arrow_drop_down),
                   focusColor: Colors.blue,
-                  onChanged: (value) => setState(() => questionCategory = value),
+                  onChanged: (QuestionCategory? value) => setState(() => questionCategory = value),
                 ),
               ),
             ),
@@ -161,13 +176,14 @@ class QuestionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
+      height: 100,
       padding: const EdgeInsets.all(10.0),
       decoration:
           const BoxDecoration(border: Border(bottom: BorderSide(color: Colors.blue, width: 1))),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(question.category),
+          QuestionCategoryIcon(category: question.category, width: 70, height: 70),
           const SizedBox(
             width: 10,
           ),
@@ -183,14 +199,27 @@ class QuestionWidget extends StatelessWidget {
   }
 }
 
+class QuestionCategoryIcon extends StatelessWidget {
+  const QuestionCategoryIcon({super.key, required this.category, this.width, this.height});
+
+  final QuestionCategory category;
+  final double? width;
+  final double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset(width: width, height: height, 'assets/images/icon_${category.name}.png');
+  }
+}
+
 class Question {
-  late final String _category;
+  late final QuestionCategory _category;
   late final String _text;
 
-  String get category => _category;
+  QuestionCategory get category => _category;
   String get text => _text;
 
-  Question({required final String category, required final String text})
+  Question({required final QuestionCategory category, required final String text})
       : _category = category,
         _text = text;
 }
