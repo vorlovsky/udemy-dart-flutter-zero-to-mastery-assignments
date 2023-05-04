@@ -1,6 +1,6 @@
 {
-    "name": "task_f1",
-    "short_name": "task_f1",
+    "name": "task_f2",
+    "short_name": "task_f2",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
