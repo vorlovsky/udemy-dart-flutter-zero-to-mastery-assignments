@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_f7/config/question_category.dart';
+import 'package:task_f8/config/question_category.dart';
 
 class QuestionCategoryIcon extends StatelessWidget {
   const QuestionCategoryIcon({super.key, required this.category, this.width, this.height});

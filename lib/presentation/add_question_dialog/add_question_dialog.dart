@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:task_f7/config/question_category.dart';
-import 'package:task_f7/model/question.dart';
-import 'package:task_f7/presentation/question_screen/widgets/question_category_icon.dart';
+import 'package:task_f8/config/question_category.dart';
+import 'package:task_f8/model/question.dart';
+import 'package:task_f8/presentation/add_question_dialog/widgets/hint_input_item.dart';
+import 'package:task_f8/presentation/components/flexible_text_field.dart';
+import 'package:task_f8/presentation/components/question_category_icon.dart';
 
 class AddQuestionDialog extends StatefulWidget {
   static DropdownMenuItem<QuestionCategory> questionCategoryMapper(QuestionCategory category) {
@@ -30,11 +32,17 @@ class AddQuestionDialog extends StatefulWidget {
 }
 
 class _AddQuestionDialogState extends State<AddQuestionDialog> {
-  QuestionCategory? questionCategory;
-  String? questionText;
+  QuestionCategory? category;
+  String? text;
+  String? solution;
+  List<String> hints = [];
 
   bool get _isAllDataProvided =>
-      questionCategory != null && questionText != null && questionText!.isNotEmpty;
+      category != null &&
+      text != null &&
+      text!.isNotEmpty &&
+      solution != null &&
+      solution!.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -51,27 +59,38 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
                 height: 60,
                 child: DropdownButtonHideUnderline(
                   child: InputDecorator(
-                    decoration:
-                        InputDecoration(labelText: questionCategory != null ? 'Category' : null),
+                    decoration: InputDecoration(labelText: category != null ? 'Category' : null),
                     child: DropdownButton(
                       hint: const Text('Category'),
-                      value: questionCategory,
+                      value: category,
                       items: widget.categoryItems,
                       isExpanded: true,
                       icon: const Icon(Icons.arrow_drop_down),
                       focusColor: Colors.blue,
-                      onChanged: (QuestionCategory? value) =>
-                          setState(() => questionCategory = value),
+                      onChanged: (QuestionCategory? value) => setState(() => category = value),
                     ),
                   ),
                 ),
               ),
-              Flexible(
-                  child: TextField(
-                maxLines: 1,
-                decoration: const InputDecoration(labelText: 'Question text'),
-                onChanged: (value) => setState(() => questionText = value),
-              ))
+              FlexibleTextField(
+                labelText: 'Question text',
+                onChanged: (value) => setState(() => text = value),
+              ),
+              FlexibleTextField(
+                labelText: 'Solution text',
+                onChanged: (value) => setState(() => solution = value),
+              ),
+              ...hints.asMap().entries.map((entry) => HintInputItem(
+                    onChanged: (value) => setState(() => hints[entry.key] = value),
+                    onRemove: () => setState(() => hints.removeAt(entry.key)),
+                  )),
+              TextButton(
+                  onPressed: () {
+                    setState(() {
+                      hints.add('');
+                    });
+                  },
+                  child: const Text('Add hint'))
             ],
           ),
           actions: [
@@ -84,7 +103,12 @@ class _AddQuestionDialogState extends State<AddQuestionDialog> {
             TextButton(
               onPressed: _isAllDataProvided
                   ? () {
-                      widget.onAdd(Question(category: questionCategory!, text: questionText!));
+                      widget.onAdd(Question(
+                        category: category!,
+                        text: text!,
+                        solution: solution!,
+                        hints: hints.where((String element) => element.isNotEmpty).toList(),
+                      ));
 
                       Navigator.of(context).pop();
                     }
