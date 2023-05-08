@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:task_f9/presentation/add_question_screen/add_question_screen.dart';
 import 'package:task_f9/presentation/question_details_screen/question_details_screen.dart';
-import 'package:task_f9/presentation/question_screen/questions_screen.dart';
-import 'package:task_f9/presentation/root_container.dart';
+import 'package:task_f9/presentation/questions_screen/questions_screen.dart';
+import 'package:task_f9/presentation/root_container/root_container.dart';
 import 'package:task_f9/utils/navigation.dart';
 
 void main() {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:task_f9/model/question.dart';
-import 'package:task_f9/presentation/question_screen/widgets/question_horizontal_list_item.dart';
-import 'package:task_f9/presentation/question_screen/widgets/question_vertical_list_item.dart';
-import 'package:task_f9/presentation/question_screen/widgets/questions_list_divider.dart';
+import 'package:task_f9/presentation/questions_screen/widgets/question_horizontal_list_item.dart';
+import 'package:task_f9/presentation/questions_screen/widgets/question_vertical_list_item.dart';
+import 'package:task_f9/presentation/questions_screen/widgets/questions_list_divider.dart';
 
 class QuestionsList extends StatelessWidget {
   const QuestionsList(

@@ -3,10 +3,15 @@ import 'package:task_f9/presentation/components/flexible_text_field.dart';
 
 class HintInputItem extends StatelessWidget {
   const HintInputItem(
-      {super.key, required void Function(String) onChanged, required void Function() onRemove})
+      {super.key,
+      required void Function(String) onChanged,
+      required void Function() onRemove,
+      FocusNode? focusNode})
       : _onChanged = onChanged,
-        _onRemove = onRemove;
+        _onRemove = onRemove,
+        _focusNode = focusNode;
 
+  final FocusNode? _focusNode;
   final void Function(String) _onChanged;
   final void Function() _onRemove;
 
@@ -16,6 +21,7 @@ class HintInputItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         FlexibleTextField(
+          focusNode: _focusNode,
           labelText: 'Hint text',
           onChanged: _onChanged,
         ),

@@ -29,6 +29,7 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
   TextEditingController textController = TextEditingController();
   TextEditingController solutionController = TextEditingController();
   List<String> hints = [];
+  List<FocusNode> hintFocusNodes = [];
 
   bool get _isAllDataProvided =>
       category != null && textController.text.isNotEmpty && solutionController.text.isNotEmpty;
@@ -47,13 +48,35 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
     ));
   }
 
+  void appendHint() {
+    FocusNode focusNode = FocusNode();
+    setState(() {
+      hints.add('');
+      hintFocusNodes.add(focusNode);
+    });
+    focusNode.requestFocus();
+  }
+
+  void removeHint(int index) {
+    FocusNode focusNode = hintFocusNodes[index];
+    setState(() {
+      hints.removeAt(index);
+      hintFocusNodes.remove(focusNode);
+    });
+  }
+
   void clear() {
     textController.clear();
     solutionController.clear();
 
+    for (FocusNode focusNode in hintFocusNodes) {
+      focusNode.dispose();
+    }
+
     setState(() {
       category = null;
       hints = [];
+      hintFocusNodes = [];
     });
 
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -89,15 +112,12 @@ class _AddQuestionScreenState extends State<AddQuestionScreen> {
                 onChanged: (value) => setState(() {}),
               ),
               ...hints.asMap().entries.map((entry) => HintInputItem(
+                    focusNode: hintFocusNodes[entry.key],
                     onChanged: (value) => setState(() => hints[entry.key] = value),
-                    onRemove: () => setState(() => hints.removeAt(entry.key)),
+                    onRemove: () => removeHint(entry.key),
                   )),
               TextButton(
-                  onPressed: () {
-                    setState(() {
-                      hints.add('');
-                    });
-                  },
+                  onPressed: appendHint,
                   child: const Text('Add hint'))
             ],
           ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:task_f9/model/question.dart';
 import 'package:task_f9/presentation/question_details_screen/question_details_screen.dart';
-import 'package:task_f9/presentation/question_screen/widgets/floating_actions_panel.dart';
-import 'package:task_f9/presentation/question_screen/widgets/questions_list.dart';
+import 'package:task_f9/presentation/questions_screen/widgets/floating_actions_panel.dart';
+import 'package:task_f9/presentation/questions_screen/widgets/questions_list.dart';
 import 'package:task_f9/utils/navigation.dart';
 
 class QuestionsArguments {
